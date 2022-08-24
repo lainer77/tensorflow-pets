@@ -217,6 +217,7 @@ dependencies:
     - tensorboard==2.9.1
     - tensorboard-data-server==0.6.1
     - tensorboard-plugin-wit==1.8.1
+    - tensorflow-datasets==4.6.0
     - tensorflow-estimator==2.9.0
     - tensorflow-examples==2511b3b28a72ab2ee0fc01a448689d7286d6bed8-
     - tensorflow-macos==2.9.2

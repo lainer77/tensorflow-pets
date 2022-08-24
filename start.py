@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+from IPython.display import clear_output
 import tensorflow as tf
 
 from tensorflow_examples.models.pix2pix import pix2pix
@@ -6,12 +8,10 @@ import tensorflow_datasets as tfds
 
 tfds.disable_progress_bar()
 
-from IPython.display import clear_output
-import matplotlib.pyplot as plt
-
 
 data_dir = "./data"
-dataset, info = tfds.load("oxford_iiit_pet:3.*.*", with_info=True, data_dir=data_dir)
+dataset, info = tfds.load("oxford_iiit_pet:3.*.*",
+                          with_info=True, data_dir=data_dir)
 
 
 def normalize(input_image, input_mask):
@@ -54,7 +54,8 @@ train = dataset["train"].map(
 test = dataset["test"].map(load_image_test)
 
 train_dataset = train.cache().shuffle(BUFFER_SIZE).batch(BATCH_SIZE).repeat()
-train_dataset = train_dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+train_dataset = train_dataset.prefetch(
+    buffer_size=tf.data.experimental.AUTOTUNE)
 test_dataset = test.batch(BATCH_SIZE)
 
 
@@ -161,13 +162,15 @@ def show_predictions(dataset=None, num=1):
         )
 
 
-# show_predictions()
+show_predictions()
 
-### 훈련 단계
+# 훈련 단계
+
+
 class DisplayCallback(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         clear_output(wait=True)
-        # show_predictions()
+        show_predictions()
         print("\n에포크 이후 예측 예시 {}\n".format(epoch + 1))
 
 

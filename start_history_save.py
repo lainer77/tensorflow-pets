@@ -11,7 +11,8 @@ tfds.disable_progress_bar()
 
 
 data_dir = "./data"
-dataset, info = tfds.load("oxford_iiit_pet:3.*.*", with_info=True, data_dir=data_dir)
+dataset, info = tfds.load("oxford_iiit_pet:3.*.*",
+                          with_info=True, data_dir=data_dir)
 
 
 def normalize(input_image, input_mask):
@@ -62,7 +63,8 @@ test = dataset["test"].map(load_image_test)
 # 이해하기 https://untitledtblog.tistory.com/158
 
 train_dataset = train.cache().shuffle(BUFFER_SIZE).batch(BATCH_SIZE).repeat()
-train_dataset = train_dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+train_dataset = train_dataset.prefetch(
+    buffer_size=tf.data.experimental.AUTOTUNE)
 test_dataset = test.batch(BATCH_SIZE)
 
 
@@ -78,10 +80,6 @@ def display(display_list):
         plt.axis("off")
     plt.show()
 
-
-for image, mask in train.take(1):
-    sample_image, sample_mask = image, mask
-# display([sample_image, sample_mask])
 
 OUTPUT_CHANNELS = 3
 
@@ -154,28 +152,17 @@ def create_mask(pred_mask):
     return pred_mask[0]
 
 
-def show_predictions(dataset=None, num=1):
-    if dataset:
-        for image, mask in dataset.take(num):
-            pred_mask = model.predict(image)
-            display([image[0], mask[0], create_mask(pred_mask)])
-    else:
-        display(
-            [
-                sample_image,
-                sample_mask,
-                create_mask(model.predict(sample_image[tf.newaxis, ...])),
-            ]
-        )
+def show_predictions(dataset, num=1):
+    for image, mask in dataset.take(num):
+        pred_mask = model.predict(image)
+        display([image[0], mask[0], create_mask(pred_mask)])
 
-
-# show_predictions()
 
 # 훈련 단계
+
 class DisplayCallback(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         clear_output(wait=True)
-        # show_predictions()
         print("\n에포크 이후 예측 예시 {}\n".format(epoch + 1))
 
 
@@ -186,7 +173,8 @@ VALIDATION_STEPS = info.splits["test"].num_examples // BATCH_SIZE // VAL_SUBSPLI
 # CSVLOGGER 콜백 생성
 # 훈련 기록을 저장하기 위한 설정
 filename = "log.csv"
-history_logger = tf.keras.callbacks.CSVLogger(filename, separator=",", append=True)
+history_logger = tf.keras.callbacks.CSVLogger(
+    filename, separator=",", append=True)
 
 # 훈련 실행
 model_history = model.fit(
